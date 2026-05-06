@@ -1,10 +1,17 @@
 package com.mahrus.firebaseskp;
 
-import com.google.appinventor.components.annotations.*;
+import com.google.appinventor.components.annotations.DesignerComponent;
+import com.google.appinventor.components.annotations.DesignerProperty;
+import com.google.appinventor.components.annotations.SimpleEvent;
+import com.google.appinventor.components.annotations.SimpleFunction;
+import com.google.appinventor.components.annotations.SimpleObject;
+import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
-import com.google.appinventor.components.runtime.*;
+import com.google.appinventor.components.common.PropertyTypeConstants;
+import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
+import com.google.appinventor.components.runtime.ComponentContainer;
+import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
-// Import tambahan untuk menangani UI dan Event
 import android.app.Activity;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -25,11 +32,8 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
 
     public FirebaseSKP(ComponentContainer container) {
         super(container.$form());
-        // Mendefinisikan activity agar bisa menjalankan perintah di layar utama (UI Thread)
         this.activity = container.$context();
     }
-
-    // --- PROPERTIES (Agar URL bisa diubah di Blocks/Designer) ---
 
     @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING, 
                      defaultValue = "https://skp-pkh-default-rtdb.firebaseio.com/")
@@ -45,8 +49,6 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
     public String FirebaseURL() {
         return this.firebaseURL;
     }
-
-    // --- METHODS (Blok Ungu) ---
 
     @SimpleFunction(description = "Simpan nilai ke tag tertentu")
     public void StoreValue(final String tag, final String valueToStore) {
@@ -109,8 +111,6 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
             }
         });
     }
-
-    // --- EVENTS (Blok Kuning) ---
 
     @SimpleEvent(description = "Dipicu setelah GetValue berhasil")
     public void GotValue(final String tag, final String value) {
