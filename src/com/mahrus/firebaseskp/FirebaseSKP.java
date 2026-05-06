@@ -1,17 +1,5 @@
 package com.mahrus.firebaseskp;
 
-import com.google.appinventor.components.annotations.DesignerComponent;
-import com.google.appinventor.components.annotations.DesignerProperty;
-import com.google.appinventor.components.annotations.SimpleEvent;
-import com.google.appinventor.components.annotations.SimpleFunction;
-import com.google.appinventor.components.annotations.SimpleObject;
-import com.google.appinventor.components.annotations.SimpleProperty;
-import com.google.appinventor.components.common.ComponentCategory;
-import com.google.appinventor.components.common.PropertyTypeConstants;
-import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
-import com.google.appinventor.components.runtime.ComponentContainer;
-import com.google.appinventor.components.runtime.EventDispatcher;
-import com.google.appinventor.components.runtime.util.AsynchUtil;
 import android.app.Activity;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,25 +7,26 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@DesignerComponent(version = 1,
+@com.google.appinventor.components.annotations.DesignerComponent(version = 1,
     description = "Flexible Firebase Extension for SKP Click - Created by Mahrus Ali",
-    category = ComponentCategory.EXTENSION,
+    category = com.google.appinventor.components.common.ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png")
-@SimpleObject(external = true)
-public class FirebaseSKP extends AndroidNonvisibleComponent {
+@com.google.appinventor.components.annotations.SimpleObject(external = true)
+public class FirebaseSKP extends com.google.appinventor.components.runtime.AndroidNonvisibleComponent {
 
     private String firebaseURL = "https://skp-pkh-default-rtdb.firebaseio.com/";
     private final Activity activity;
 
-    public FirebaseSKP(ComponentContainer container) {
+    public FirebaseSKP(com.google.appinventor.components.runtime.ComponentContainer container) {
         super(container.$form());
         this.activity = container.$context();
     }
 
-    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING, 
-                     defaultValue = "https://skp-pkh-default-rtdb.firebaseio.com/")
-    @SimpleProperty(description = "Alamat URL Firebase Realtime Database")
+    @com.google.appinventor.components.annotations.DesignerProperty(
+        editorType = com.google.appinventor.components.common.PropertyTypeConstants.PROPERTY_TYPE_STRING, 
+        defaultValue = "https://skp-pkh-default-rtdb.firebaseio.com/")
+    @com.google.appinventor.components.annotations.SimpleProperty(description = "Alamat URL Firebase Realtime Database")
     public void FirebaseURL(String url) {
         if (!url.endsWith("/")) {
             url = url + "/";
@@ -45,14 +34,14 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
         this.firebaseURL = url;
     }
 
-    @SimpleProperty
+    @com.google.appinventor.components.annotations.SimpleProperty
     public String FirebaseURL() {
         return this.firebaseURL;
     }
 
-    @SimpleFunction(description = "Simpan nilai ke tag tertentu")
+    @com.google.appinventor.components.annotations.SimpleFunction(description = "Simpan nilai ke tag tertentu")
     public void StoreValue(final String tag, final String valueToStore) {
-        AsynchUtil.runAsynchronously(new Runnable() {
+        com.google.appinventor.components.runtime.util.AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -80,9 +69,9 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
         });
     }
 
-    @SimpleFunction(description = "Ambil nilai dari tag tertentu")
+    @com.google.appinventor.components.annotations.SimpleFunction(description = "Ambil nilai dari tag tertentu")
     public void GetValue(final String tag) {
-        AsynchUtil.runAsynchronously(new Runnable() {
+        com.google.appinventor.components.runtime.util.AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -112,32 +101,32 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
         });
     }
 
-    @SimpleEvent(description = "Dipicu setelah GetValue berhasil")
+    @com.google.appinventor.components.annotations.SimpleEvent(description = "Dipicu setelah GetValue berhasil")
     public void GotValue(final String tag, final String value) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                EventDispatcher.dispatchEvent(FirebaseSKP.this, "GotValue", tag, value);
+                com.google.appinventor.components.runtime.EventDispatcher.dispatchEvent(FirebaseSKP.this, "GotValue", tag, value);
             }
         });
     }
 
-    @SimpleEvent(description = "Dipicu setelah StoreValue berhasil")
+    @com.google.appinventor.components.annotations.SimpleEvent(description = "Dipicu setelah StoreValue berhasil")
     public void DataChanged(final String tag, final String value) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                EventDispatcher.dispatchEvent(FirebaseSKP.this, "DataChanged", tag, value);
+                com.google.appinventor.components.runtime.EventDispatcher.dispatchEvent(FirebaseSKP.this, "DataChanged", tag, value);
             }
         });
     }
 
-    @SimpleEvent(description = "Dipicu jika terjadi error")
+    @com.google.appinventor.components.annotations.SimpleEvent(description = "Dipicu jika terjadi error")
     public void FirebaseError(final String message) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                EventDispatcher.dispatchEvent(FirebaseSKP.this, "FirebaseError", message);
+                com.google.appinventor.components.runtime.EventDispatcher.dispatchEvent(FirebaseSKP.this, "FirebaseError", message);
             }
         });
     }
