@@ -4,6 +4,8 @@ import com.google.appinventor.components.annotations.*;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.runtime.*;
 import com.google.appinventor.components.runtime.util.AsynchUtil;
+// Import tambahan untuk menangani UI dan Event
+import android.app.Activity;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -19,9 +21,12 @@ import java.net.URL;
 public class FirebaseSKP extends AndroidNonvisibleComponent {
 
     private String firebaseURL = "https://skp-pkh-default-rtdb.firebaseio.com/";
+    private final Activity activity;
 
     public FirebaseSKP(ComponentContainer container) {
         super(container.$form());
+        // Mendefinisikan activity agar bisa menjalankan perintah di layar utama (UI Thread)
+        this.activity = container.$context();
     }
 
     // --- PROPERTIES (Agar URL bisa diubah di Blocks/Designer) ---
@@ -49,13 +54,11 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
             @Override
             public void run() {
                 try {
-                    // Firebase REST API menggunakan .json di akhir URL
                     URL url = new URL(firebaseURL + tag + ".json");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("PUT"); // Mengganti data di tag tersebut
+                    conn.setRequestMethod("PUT");
                     conn.setDoOutput(true);
                     
-                    // Kirim data (harus dalam format JSON string)
                     String jsonValue = "\"" + valueToStore + "\"";
                     byte[] input = jsonValue.getBytes("utf-8");
                     try (OutputStream os = conn.getOutputStream()) {
@@ -95,7 +98,6 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
                         }
                         in.close();
                         
-                        // Menghapus tanda kutip dari hasil JSON
                         String cleanValue = response.toString().replace("\"", "");
                         GotValue(tag, cleanValue);
                     } else {
@@ -112,7 +114,7 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
 
     @SimpleEvent(description = "Dipicu setelah GetValue berhasil")
     public void GotValue(final String tag, final String value) {
-        form.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(FirebaseSKP.this, "GotValue", tag, value);
@@ -122,7 +124,7 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
 
     @SimpleEvent(description = "Dipicu setelah StoreValue berhasil")
     public void DataChanged(final String tag, final String value) {
-        form.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(FirebaseSKP.this, "DataChanged", tag, value);
@@ -132,7 +134,7 @@ public class FirebaseSKP extends AndroidNonvisibleComponent {
 
     @SimpleEvent(description = "Dipicu jika terjadi error")
     public void FirebaseError(final String message) {
-        form.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(FirebaseSKP.this, "FirebaseError", message);
